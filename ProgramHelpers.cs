@@ -63,6 +63,14 @@ internal static class ProgramHelpers
     /// <returns>Aliases for the specified option.</returns>
     public static string[] GenerateAliases(string option)
     {
-        return new string[] { $"/{option}", $"--{option}" };
+        return
+            [
+            $"/{option[0]}",
+            $"/{option[0..3]}",
+            $"/{option}",
+            $"--{option[0]}",
+            $"--{option[0..3]}",
+            $"--{option}",
+            ];
     }
 }

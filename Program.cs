@@ -1,6 +1,8 @@
 ﻿using System;
 using System.CommandLine;
+using System.CommandLine.Builder;
 using System.CommandLine.NamingConventionBinder;
+using System.CommandLine.Parsing;
 using System.IO;
 
 namespace ExcelFusion
@@ -13,28 +15,84 @@ namespace ExcelFusion
         /// <param name="args">Command line arguments passed to the program.</param>
         static void Main(string[] args)
         {
-            var cmdExtract = new Command("e", ResourceStrings.ExtractDescription) {
+            /*
+             * Prepare the extract command.
+             */
+            var cmdExtract = new Command("extract", ResourceStrings.ExtractDescription) {
                 new Argument<string>(name:"ExcelFile", description:ResourceStrings.ExtractArgumentDescription),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("out"), description:ResourceStrings.ExtractOutDescription)
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("output"), description:ResourceStrings.ExtractOutDescription)
             };
+            cmdExtract.AddAlias("e");
 
-            var cmdCreate = new Command("c", ResourceStrings.CreateDescription) {
+            /*
+             * Prepare the build command.
+             */
+            var cmdBuild = new Command("build", ResourceStrings.CreateDescription) {
                 new Argument<string>(name:"Folder", description:ResourceStrings.CreateArgumentDescription),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("out"), description:ResourceStrings.CreateOutDescription),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("ext"), description:ResourceStrings.CreateExtDescription, getDefaultValue:()=>"xlsx")
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("output"), description:ResourceStrings.CreateOutDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("extension"), description:ResourceStrings.CreateExtDescription, getDefaultValue:()=>"xlsx")
             };
+            cmdBuild.AddAlias("b");
 
+            /*
+             * Prepare the license command.
+             */
+            var cmdLicense = new Command("license", ResourceStrings.LicenseDescription);
+            cmdLicense.AddAlias("l");
+
+            /*
+             * Configure the handlers for each command.
+             */
             ConfigureExportHandler(cmdExtract);
-            ConfigureCreateHandler(cmdCreate);
+            ConfigureCreateHandler(cmdBuild);
+            ConfigureLicenseHandler(cmdLicense);
 
-            var root = new RootCommand("Manipulates Excel files.")
+            /*
+             * Create the root command and add the subcommands.
+             */
+            var root = new RootCommand(ResourceStrings.RootCommandDescription)
             {
                 cmdExtract,
-                cmdCreate
+                cmdBuild,
+                cmdLicense
             };
 
+            /*
+             * Build the command line parser.
+             */
+            var parser = new CommandLineBuilder(root)
+                                    .UseHelp()
+                                    .UseEnvironmentVariableDirective()
+                                    .UseParseDirective()
+                                    .UseSuggestDirective()
+                                    .RegisterWithDotnetSuggest()
+                                    .UseTypoCorrections()
+                                    .UseParseErrorReporting()
+                                    .UseExceptionHandler()
+                                    .CancelOnProcessTermination()
+                                    .Build();
+
+            /*
+             * Display the header and invoke the parser.
+             */
             Console.WriteLine(ResourceStrings.Header);
-            root.Invoke(args);
+            parser.Invoke(args);
+        }
+
+        /// <summary>
+        /// Configures the command handler for the license command.
+        /// </summary>
+        /// <param name="cmdLicense">The command data.</param>
+        private static void ConfigureLicenseHandler(Command cmdLicense)
+        {
+            /*
+             * Display the license information.
+             */
+            cmdLicense.Handler = CommandHandler.Create(() =>
+            {
+                Console.WriteLine(ResourceStrings.MitLicense);
+                return 0;
+            });
         }
 
         /// <summary>
@@ -43,6 +101,9 @@ namespace ExcelFusion
         /// <param name="cmdCreate">The command data.</param>
         private static void ConfigureCreateHandler(Command cmdCreate)
         {
+            /*
+             * Create the Excel file.
+             */
             cmdCreate.Handler = CommandHandler.Create<CreateOptions>((options) =>
             {
                 /*
@@ -55,8 +116,7 @@ namespace ExcelFusion
                 }
 
                 ExcelFileCreator.CreateExcelFile(options);
-                ExcelFileCreator.
-                                IncludeVbaComponents(options);
+                ExcelFileCreator.IncludeVbaComponents(options);
 
                 return 0;
             });
@@ -68,6 +128,9 @@ namespace ExcelFusion
         /// <param name="cmdExtract">The command data.</param>
         private static void ConfigureExportHandler(Command cmdExtract)
         {
+            /*
+             * Extract the Excel file.
+             */
             cmdExtract.Handler = CommandHandler.Create<ExtractOptions>((options) =>
             {
                 /*
@@ -89,7 +152,7 @@ namespace ExcelFusion
                 /*
                  * Extracts the Excel file to the Output folder, creating the directory if needed.
                  */
-                Console.WriteLine($"Extracting {Path.GetFileName(options.ExcelFile)} to ‘{options.Out}’");
+                Console.WriteLine(ResourceStrings.Extracing, Path.GetFileName(options.ExcelFile), options.Out);
                 if (!Directory.Exists(options.Out))
                     Directory.CreateDirectory(options.Out);
                 ZipHelpers.ExtractFiles(options);

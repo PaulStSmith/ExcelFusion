@@ -10,7 +10,7 @@
     <Authors />
     <Company>Paulo Santos</Company>
     <Product>Excel Fusion</Product>
-    <Copyright>MIT License - 2024</Copyright>
+    <Copyright>Copyright © 2024 - Paulo Santos (MIT License)</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

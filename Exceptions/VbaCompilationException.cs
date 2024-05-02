@@ -25,8 +25,6 @@ namespace ExcelFusion.Exceptions
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
-        public VbaCompilationException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public VbaCompilationException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

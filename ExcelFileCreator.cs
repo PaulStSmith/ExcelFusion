@@ -68,7 +68,7 @@ namespace ExcelFusion
                 /*
                  * Open Excel and the Excel file
                  */
-                Console.WriteLine("Opening Excel...");
+                Console.WriteLine(ResourceStrings.ExcelOpening);
                 var xl = new Microsoft.Office.Interop.Excel.Application
                 {
                     Visible = true,
@@ -76,12 +76,12 @@ namespace ExcelFusion
                     DisplayAlerts = true,
                     ScreenUpdating = true,
                 };
-                Console.WriteLine("Excel open.");
+                Console.WriteLine(ResourceStrings.ExcelOpen);
                 var start = DateTime.Now;
-                Console.WriteLine($"Opening ‘{options.Out}’...");
+                Console.WriteLine(ResourceStrings.Opening, options.Out);
                 var wb = xl.Workbooks.Open(options.Out);
                 wb.Activate();
-                Console.WriteLine($"‘{options.Out}’ Open.");
+                Console.WriteLine(ResourceStrings.Open, options.Out);
 
                 /*
                  * Get the list of files of the VBA project.
@@ -105,7 +105,7 @@ namespace ExcelFusion
                 }
                 catch (Exception ex)
                 {
-                    throw new VbaCompilationException("An error occurred while compiling the VBA project.", ex);
+                    throw new VbaCompilationException(ResourceStrings.VbaCompileError, ex);
                 }
 
                 wb.Close(SaveChanges: true);
