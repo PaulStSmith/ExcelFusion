@@ -2,7 +2,7 @@
 
 #nullable enable
 
-namespace AutomateExcel
+namespace ExcelFusion
 {
     /// <summary>
     /// Represents information about a VBA reference.
@@ -22,7 +22,7 @@ namespace AutomateExcel
         /// <summary>
         /// Gets or sets the full path that this reference refers to.
         /// </summary>
-        public string FullPath { get; set; }
+        public string FullPath { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the version of the reference.

@@ -1,4 +1,6 @@
-﻿namespace AutomateExcel
+﻿#nullable enable
+
+namespace ExcelFusion
 {
     /// <summary>
     /// Represents the options for the extract command.

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExcelFusion;
+using System;
 using System.Runtime.InteropServices;
 
 /// <summary>
@@ -36,8 +37,8 @@ internal static class ProgramHelpers
         if (ex.Message.StartsWith("Programmatic access to Visual Basic Project is not trusted"))
         {
             Console.ForegroundColor = clr;
-            Console.WriteLine("Please, grant access to the Visual Basic Project.");
-            Console.WriteLine("Try again? Y/N");
+            Console.WriteLine(ResourceStrings.GrantAccess);
+            Console.WriteLine(ResourceStrings.TryAgain);
             var c = Console.ReadKey();
             if (c.Key == ConsoleKey.Y)
                 return false;

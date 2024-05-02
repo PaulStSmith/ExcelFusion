@@ -5,7 +5,7 @@ using System.Threading;
 
 #nullable enable
 
-namespace AutomateExcel
+namespace ExcelFusion
 {
     internal static class ZipHelpers
     {
@@ -21,7 +21,7 @@ namespace AutomateExcel
             using var zip = new ZipArchive(fs);
             foreach (var entry in zip.Entries)
             {
-                Console.WriteLine($"Extracting {entry.FullName}");
+                Console.WriteLine(ResourceStrings.Extracing, entry.FullName);
                 var dest = Path.Combine(options.Out, entry.FullName.Replace('/', '\\'));
                 var dir = Path.GetDirectoryName(dest) ?? "";
                 if (!Directory.Exists(dir))
@@ -74,7 +74,7 @@ namespace AutomateExcel
                 var buffer = new byte[4096];
                 var entryName = ProgramHelpers.GetRelativePath(basePath, f.FullName);
                 var entry = zip.CreateEntry(entryName.Replace('\\', '/'));
-                Console.WriteLine($"Compressing {entryName}");
+                Console.WriteLine(ResourceStrings.Compressing , entryName);
                 using var strm = entry.Open();
                 using var fs = f.OpenRead();
                 while (true)

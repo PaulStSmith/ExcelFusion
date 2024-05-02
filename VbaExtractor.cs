@@ -1,18 +1,22 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace AutomateExcel
+namespace ExcelFusion
 {
     /// <summary>
     /// Contains methods to extract Visual Basic source code from an Excel file.
     /// </summary>
     internal static class VbaExtractor
     {
+        /// <summary>
+        /// Options to serialize JSON.
+        /// </summary>
+        private static readonly JsonSerializerOptions jsonOpts = new() { WriteIndented = true };
 
         /// <summary>
         /// Extracts the VBA code from the Excel file specified within the <see cref="ExtractOptions"/> object.
@@ -23,16 +27,16 @@ namespace AutomateExcel
             /*
              * Open Excel and the Excel file
              */
-            Console.WriteLine("Opening Excel...");
+            Console.WriteLine(ResourceStrings.ExcelOpening);
             var xl = new Microsoft.Office.Interop.Excel.Application
             {
                 Visible = true
             };
-            Console.WriteLine("Excel open.");
-            Console.WriteLine($"Opening ‘{options.ExcelFile}’...");
+            Console.WriteLine(ResourceStrings.ExcelOpen);
+            Console.WriteLine(ResourceStrings.Opening,options.ExcelFile);
             var wb = xl.Workbooks.Open(options.ExcelFile);
             wb.Activate();
-            Console.WriteLine($"‘{options.ExcelFile}’ Open.");
+            Console.WriteLine(ResourceStrings.Open,options.ExcelFile);
 
             /*
              * Check if we have a VB project to export.
@@ -60,9 +64,9 @@ namespace AutomateExcel
             }
 
             wb.Close(SaveChanges: false);
-            Console.WriteLine("Closing Excel...");
+            Console.WriteLine(ResourceStrings.ExcelClosing);
             xl.Quit();
-            Console.WriteLine("Closed.");
+            Console.WriteLine(ResourceStrings.ExcelClosed);
         }
 
         /// <summary>
@@ -72,6 +76,9 @@ namespace AutomateExcel
         /// <p7aram name="wb">A <see cref="Workbook"/> object containing the Visual Basic project to extract.</param>
         private static void ExtractReferences(ExtractOptions options, Workbook wb)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
+            if (!CheckArgs(options, wb) || !wb.HasVBProject) return;
+
             var dir = Path.Combine(options.Out, ".vba");
             var proj = wb.VBProject;
             var projFile = Path.Combine(dir, proj.Name + ".proj");
@@ -92,8 +99,27 @@ namespace AutomateExcel
             }
 
             using var writer = new StreamWriter(projFile);
-            writer.WriteLine(JsonConvert.SerializeObject(lst, Formatting.Indented));
+            writer.WriteLine(JsonSerializer.Serialize(lst, jsonOpts));
             writer.Close();
+#pragma warning restore CS8604
+        }
+
+        /// <summary>
+        /// Checks if the arguments are valid.
+        /// </summary>
+        /// <param name="options">An <see cref="ExtractOptions"/> object containing the data to access the Excel file.</param>
+        /// <param name="wb">A <see cref="Workbook"/> object containing the Visual Basic project to extract.</param>
+        /// <returns>True if the arguments are valid; otherwise, false.</returns>
+        private static bool CheckArgs(ExtractOptions options, Workbook wb)
+        {
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(wb);
+            if (string.IsNullOrEmpty(options.Out))
+            {
+                Console.WriteLine(ResourceStrings.OutputFolderNotSpecified);
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -103,13 +129,16 @@ namespace AutomateExcel
         /// <p7aram name="wb">A <see cref="Workbook"/> object containing the Visual Basic project to extract.</param>
         public static void ExtractVbProject(ExtractOptions options, Workbook wb)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
+            if (!CheckArgs(options, wb) || !wb.HasVBProject) return;
+
             var proj = wb.VBProject;
             foreach (VBComponent comp in proj.VBComponents)
             {
                 /*
                  * Check if we need to ignore a component.
                  */
-                Console.Write($"Processing {wb.Name}.{comp.Name} ... ");
+                Console.Write(ResourceStrings.Processing, $"{wb.Name}.{comp.Name}");
                 /*
                  * Establish the file extension for the component to be exported.
                  */
@@ -128,7 +157,7 @@ namespace AutomateExcel
                  */
                 var dir = Path.Combine(options.Out, ".vba");
                 var filePath = Path.Combine(dir, comp.Name + ext);
-                Console.WriteLine($"it's a {comp.Type.ToString().Substring(comp.Type.ToString().LastIndexOf('_') + 1)}. Exporting.");
+                Console.WriteLine(ResourceStrings.ItsA, comp.Type.ToString()[(comp.Type.ToString().LastIndexOf('_') + 1)..]);
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
@@ -137,6 +166,7 @@ namespace AutomateExcel
                  */
                 comp.Export(filePath);
             }
+#pragma warning restore CS8604
         }
     }
 }

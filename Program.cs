@@ -1,18 +1,9 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.Vbe.Interop;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
 
-#nullable enable 
-
-namespace AutomateExcel
+namespace ExcelFusion
 {
     internal class Program
     {
@@ -22,15 +13,15 @@ namespace AutomateExcel
         /// <param name="args">Command line arguments passed to the program.</param>
         static void Main(string[] args)
         {
-            var cmdExtract = new Command("e", "Extracts the specified Excel file") {
-                new Argument<string>(name:"ExcelFile", description:"A path to an Excel file."),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("out"), description:"The folder where to extact the Excel file.")
+            var cmdExtract = new Command("e", ResourceStrings.ExtractDescription) {
+                new Argument<string>(name:"ExcelFile", description:ResourceStrings.ExtractArgumentDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("out"), description:ResourceStrings.ExtractOutDescription)
             };
 
-            var cmdCreate = new Command("c", "Creates an Excel file based on a folder") {
-                new Argument<string>(name:"Folder", description:"A path to a folder containing the structure of an Excel file."),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("out"), description:"The name of the Excel file output."),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("ext"), description:"The name of the Extension of the Excel file.", getDefaultValue:()=>"xlsx")
+            var cmdCreate = new Command("c", ResourceStrings.CreateDescription) {
+                new Argument<string>(name:"Folder", description:ResourceStrings.CreateArgumentDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("out"), description:ResourceStrings.CreateOutDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("ext"), description:ResourceStrings.CreateExtDescription, getDefaultValue:()=>"xlsx")
             };
 
             ConfigureExportHandler(cmdExtract);
@@ -42,9 +33,8 @@ namespace AutomateExcel
                 cmdCreate
             };
 
+            Console.WriteLine(ResourceStrings.Header);
             root.Invoke(args);
-            Console.WriteLine("Press [Enter] to continue.");
-            Console.ReadLine();
         }
 
         /// <summary>
@@ -60,7 +50,7 @@ namespace AutomateExcel
                  */
                 if (!Directory.Exists(options.Folder))
                 {
-                    Console.WriteLine("Folder not found.");
+                    Console.WriteLine(ResourceStrings.FolderNotFoundMessage);
                     return 99;
                 }
 
@@ -85,7 +75,7 @@ namespace AutomateExcel
                  */
                 if (!File.Exists(options.ExcelFile))
                 {
-                    Console.WriteLine($"Excel file '{options.ExcelFile}' not found");
+                    Console.WriteLine(ResourceStrings.FileNotFoundMessage, options.ExcelFile);
                     return 99;
                 }
 

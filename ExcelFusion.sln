@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelFusion", "ExcelFusion.csproj", "{53BA30B3-0621-4096-A1BE-D27FD89D85F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelFusion", "ExcelFusion.csproj", "{CA20A295-D626-4601-B936-65E969E77E21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{53BA30B3-0621-4096-A1BE-D27FD89D85F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53BA30B3-0621-4096-A1BE-D27FD89D85F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53BA30B3-0621-4096-A1BE-D27FD89D85F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53BA30B3-0621-4096-A1BE-D27FD89D85F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA20A295-D626-4601-B936-65E969E77E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA20A295-D626-4601-B936-65E969E77E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA20A295-D626-4601-B936-65E969E77E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA20A295-D626-4601-B936-65E969E77E21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F702188E-1781-4D3C-A6C7-02B44EFFD161}
+		SolutionGuid = {DA879DC1-BA02-4D3E-A521-2F67D2CC6DFF}
 	EndGlobalSection
 EndGlobal
