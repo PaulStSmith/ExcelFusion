@@ -21,9 +21,9 @@ namespace ExcelFusion
             using var zip = new ZipArchive(fs);
             foreach (var entry in zip.Entries)
             {
-                Console.WriteLine(ResourceStrings.Extracing, entry.FullName);
                 var dest = Path.Combine(options.Out, entry.FullName.Replace('/', '\\'));
                 var dir = Path.GetDirectoryName(dest) ?? "";
+                Console.WriteLine(ResourceStrings.Extracing, entry.FullName, dir);
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 

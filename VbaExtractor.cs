@@ -1,10 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
-using System.Text.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace ExcelFusion
 {
@@ -25,48 +22,67 @@ namespace ExcelFusion
         public static void ExtractVbaSourceCode(ExtractOptions options)
         {
             /*
+             * If for some reason the file does not exist, display a message and exit.
+             */
+            if (!File.Exists(options.ExcelFile))
+            {
+                Console.WriteLine(ResourceStrings.FileNotFoundMessage, options.ExcelFile);
+                return;
+            }
+
+            /*
              * Open Excel and the Excel file
              */
             Console.WriteLine(ResourceStrings.ExcelOpening);
             var xl = new Microsoft.Office.Interop.Excel.Application
             {
-                Visible = true
+                Visible = true,
+                EnableEvents = false,
+                DisplayAlerts = false,
+                ScreenUpdating = false,
             };
-            Console.WriteLine(ResourceStrings.ExcelOpen);
-            Console.WriteLine(ResourceStrings.Opening,options.ExcelFile);
-            var wb = xl.Workbooks.Open(options.ExcelFile);
-            wb.Activate();
-            Console.WriteLine(ResourceStrings.Open,options.ExcelFile);
-
-            /*
-             * Check if we have a VB project to export.
-             */
-            if (wb.HasVBProject)
+            try
             {
+                Console.WriteLine(ResourceStrings.ExcelOpen);
+                Console.WriteLine(ResourceStrings.Opening, options.ExcelFile);
+                var xlFilePath = (new FileInfo(options.ExcelFile)).FullName;
+                var wb = xl.Workbooks.Open(xlFilePath);
+                wb.Activate();
+                Console.WriteLine(ResourceStrings.Open, options.ExcelFile);
+
                 /*
-                 * This while permits retry if we fail due to lack of permission.
+                 * Check if we have a VB project to export.
                  */
-                while (true)
+                if (wb.HasVBProject)
                 {
-                    try
+                    /*
+                     * This while permits retry if we fail due to lack of permission.
+                     */
+                    while (true)
                     {
-                        ExtractVbProject(options, wb);
+                        try
+                        {
+                            ExtractVbProject(options, wb);
+                        }
+                        catch (COMException ex)
+                        {
+                            if (!ProgramHelpers.HandleException(ex))
+                                continue;
+                        }
+                        break;
                     }
-                    catch (COMException ex)
-                    {
-                        if (!ProgramHelpers.HandleException(ex))
-                            continue;
-                    }
-                    break;
+
+                    ExtractReferences(options, wb);
                 }
 
-                ExtractReferences(options, wb);
+                wb.Close(SaveChanges: false);
             }
-
-            wb.Close(SaveChanges: false);
-            Console.WriteLine(ResourceStrings.ExcelClosing);
-            xl.Quit();
-            Console.WriteLine(ResourceStrings.ExcelClosed);
+            finally
+            {
+                Console.WriteLine(ResourceStrings.ExcelClosing);
+                xl.Quit();
+                Console.WriteLine(ResourceStrings.ExcelClosed);
+            }
         }
 
         /// <summary>

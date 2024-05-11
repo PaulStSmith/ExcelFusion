@@ -6,6 +6,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using ExcelFusion.Exceptions;
+using System.Runtime.InteropServices;
+using System.Text;
+using Microsoft.Office.Interop.Excel;
 
 namespace ExcelFusion
 {
@@ -72,14 +75,15 @@ namespace ExcelFusion
                 var xl = new Microsoft.Office.Interop.Excel.Application
                 {
                     Visible = true,
-                    EnableEvents = true,
-                    DisplayAlerts = true,
-                    ScreenUpdating = true,
+                    EnableEvents = false,
+                    DisplayAlerts = false,
+                    ScreenUpdating = false,
                 };
                 Console.WriteLine(ResourceStrings.ExcelOpen);
                 var start = DateTime.Now;
                 Console.WriteLine(ResourceStrings.Opening, options.Out);
-                var wb = xl.Workbooks.Open(options.Out);
+                var xlFilePath = new FileInfo(options.Out).FullName;
+                var wb = xl.Workbooks.Open(xlFilePath);
                 wb.Activate();
                 Console.WriteLine(ResourceStrings.Open, options.Out);
 
@@ -158,7 +162,7 @@ namespace ExcelFusion
                 /*
                  * Adds new references to the project.
                  */
-                if (!item.Guid.HasValue && File.Exists(item.FullPath))
+                if (File.Exists(item.FullPath))
                 {
                     try
                     {

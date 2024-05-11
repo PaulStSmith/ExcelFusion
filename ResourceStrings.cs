@@ -69,5 +69,6 @@ namespace ExcelFusion
                                          "SOFTWARE. \r\n";
 
         public const String LicenseDescription = "Displays the MIT license";
+        public const String MacroError = "Excel could not run an AutoLoad macro.";
     }
 }

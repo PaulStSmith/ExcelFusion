@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ExcelFusion": {
+      "commandName": "Project",
+      "commandLineArgs": "b SolutionTreePro2 /ext .xlam"
+    }
+  }
+}
