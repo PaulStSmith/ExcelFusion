@@ -32,7 +32,7 @@ Possible commands are:
  
         If the output file is not specified, the new Excel file will have the same name as the directory containing the components.
 
-    - `e`, `ext`, or `externsion` to specify the extension of the new Excel file.
+    - `e`, `ext`, or `extension` to specify the extension of the new Excel file.
 
         If the extension is not specified, the new Excel file will have the default extension `.xlsx`.
 
