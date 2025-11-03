@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Compressing" xml:space="preserve">
+    <value>Komprimiere {0} ...</value>
+  </data>
+  <data name="CreateArgumentDescription" xml:space="preserve">
+    <value>Ein Pfad zu einem Ordner, der die Struktur einer Excel-Datei enthält.</value>
+  </data>
+  <data name="CreateDescription" xml:space="preserve">
+    <value>Erstellt eine Excel-Datei basierend auf einem Ordner.</value>
+  </data>
+  <data name="CreateExtDescription" xml:space="preserve">
+    <value>Der Name der Erweiterung der Excel-Datei.</value>
+  </data>
+  <data name="CreateOutDescription" xml:space="preserve">
+    <value>Der Name der Ausgabe-Excel-Datei.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Extrahiert Dateien aus einer Excel-Datei und/oder integriert diese Dateien zurück in eine Excel-Datei.</value>
+  </data>
+  <data name="ExcelClosed" xml:space="preserve">
+    <value>Excel geschlossen.</value>
+  </data>
+  <data name="ExcelClosing" xml:space="preserve">
+    <value>Excel wird geschlossen...</value>
+  </data>
+  <data name="ExcelOpen" xml:space="preserve">
+    <value>Excel geöffnet.</value>
+  </data>
+  <data name="ExcelOpening" xml:space="preserve">
+    <value>Excel wird geöffnet...</value>
+  </data>
+  <data name="Extracing" xml:space="preserve">
+    <value>Extrahiere {0} nach '{1}' ...</value>
+  </data>
+  <data name="ExtractArgumentDescription" xml:space="preserve">
+    <value>Ein Pfad zu einer Excel-Datei.</value>
+  </data>
+  <data name="ExtractDescription" xml:space="preserve">
+    <value>Extrahiert Dateien aus einer Excel-Datei.</value>
+  </data>
+  <data name="ExtractOutDescription" xml:space="preserve">
+    <value>Der Ordner, in den die Excel-Datei extrahiert werden soll.</value>
+  </data>
+  <data name="FileNotFoundMessage" xml:space="preserve">
+    <value>Excel-Datei '{0}' nicht gefunden.</value>
+  </data>
+  <data name="FolderNotFoundMessage" xml:space="preserve">
+    <value>Ordner '{0}' nicht gefunden.</value>
+  </data>
+  <data name="GrantAccess" xml:space="preserve">
+    <value>Bitte gewähren Sie Zugriff auf das Visual Basic-Projekt.</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>  ___            _ ___        _           
+ | __|_ ____ ___| | __|  _ __(_)___ _ _   
+ | _|\ \ / _/ -_) | _| || (_-&lt; / _ \ ' \  
+ |___/_\_\__\___|_|_| \_,_/__/_\___/_||_| 
+==========================================
+Autor: ByteForge 
+MIT-Lizenz - 2024   </value>
+  </data>
+  <data name="ItsA" xml:space="preserve">
+    <value>es ist ein {0}. Exportiere.</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>'{0}' Geöffnet.</value>
+  </data>
+  <data name="Opening" xml:space="preserve">
+    <value>Öffne '{0}'...</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Verarbeite {0} ...</value>
+  </data>
+  <data name="ReferenceAdded" xml:space="preserve">
+    <value>Verweis auf {0} zum Projekt hinzugefügt. GUID = '{1}'</value>
+  </data>
+  <data name="ReferenceFailed" xml:space="preserve">
+    <value>Fehler beim Hinzufügen des Verweises auf {0}.</value>
+  </data>
+  <data name="ReferenceGuidError" xml:space="preserve">
+    <value>GUID im Verweis auf '{0}' in der Projektdatei unterscheidet sich von der GUID im VB-Projekt.</value>
+  </data>
+  <data name="ReferenceGuidProject" xml:space="preserve">
+    <value>     in der Projektdatei : {0}</value>
+  </data>
+  <data name="ReferenceGuiVbProject" xml:space="preserve">
+    <value>     im VB-Projekt   : {0}</value>
+  </data>
+  <data name="ReferenceRemoved" xml:space="preserve">
+    <value>Verweis aus VB-Projekt entfernt.</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Erneut versuchen? J/N</value>
+  </data>
+  <data name="CouldNotDeserialize" xml:space="preserve">
+    <value>Datei '{0}' konnte nicht deserialisiert werden</value>
+  </data>
+  <data name="OutputFolderNotSpecified" xml:space="preserve">
+    <value>Ausgabeordner nicht angegeben.</value>
+  </data>
+  <data name="RootCommandDescription" xml:space="preserve">
+    <value>Manipuliert Excel-Dateien.</value>
+  </data>
+  <data name="VbaCompileError" xml:space="preserve">
+    <value>Ein Fehler ist beim Kompilieren des VBA-Projekts aufgetreten.</value>
+  </data>
+  <data name="MitLicense" xml:space="preserve">
+    <value>Copyright © 2024 ByteForge 
+
+Hiermit wird unentgeltlich jeder Person, die eine Kopie 
+dieser Software und der zugehörigen Dokumentationsdateien (die "Software") erhält, die Erlaubnis erteilt, 
+uneingeschränkt zu verfahren, einschließlich ohne Beschränkung der Rechte 
+zur Nutzung, zum Kopieren, Modifizieren, Zusammenführen, Veröffentlichen, Verbreiten, Unterlizenzieren und/oder zum Verkauf 
+von Kopien der Software, und Personen, denen diese Software 
+überlassen wird, dies unter den folgenden Bedingungen zu gestatten: 
+
+Der obige Urheberrechtsvermerk und dieser Erlaubnisvermerk sind in allen 
+Kopien oder wesentlichen Teilen der Software beizulegen. 
+
+DIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE BEREITGESTELLT, 
+EINSCHLIEßLICH DER GARANTIE ZUR BRAUCHBARKEIT FÜR EINEN BESTIMMTEN ZWECK UND 
+NICHTVERLETZUNG VON RECHTEN DRITTER. IN KEINEM FALL SIND DIE AUTOREN ODER 
+COPYRIGHTINHABER FÜR JEGLICHEN SCHÄDEN ODER SONSTIGE ANSPRÜCHE HAFTBAR ZU MACHEN, 
+OB INFOLGE DER ERFÜLLUNG EINES VERTRAGES, EINES DELIKTES ODER ANDERS IM ZUSAMMENHANG MIT 
+DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE. </value>
+  </data>
+  <data name="LicenseDescription" xml:space="preserve">
+    <value>Zeigt die MIT-Lizenz an</value>
+  </data>
+  <data name="MacroError" xml:space="preserve">
+    <value>Excel konnte ein AutoLoad-Makro nicht ausführen.</value>
+  </data>
+</root>

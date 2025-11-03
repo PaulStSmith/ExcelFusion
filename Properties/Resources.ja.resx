@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Compressing" xml:space="preserve">
+    <value>{0} を圧縮中...</value>
+  </data>
+  <data name="CreateArgumentDescription" xml:space="preserve">
+    <value>Excelファイルの構造を含むフォルダーへのパス。</value>
+  </data>
+  <data name="CreateDescription" xml:space="preserve">
+    <value>フォルダーに基づいてExcelファイルを作成します。</value>
+  </data>
+  <data name="CreateExtDescription" xml:space="preserve">
+    <value>Excelファイルの拡張子の名前。</value>
+  </data>
+  <data name="CreateOutDescription" xml:space="preserve">
+    <value>出力するExcelファイルの名前。</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Excelファイルからファイルを抽出したり、それらのファイルをExcelファイルに統合したりします。</value>
+  </data>
+  <data name="ExcelClosed" xml:space="preserve">
+    <value>Excelが閉じられました。</value>
+  </data>
+  <data name="ExcelClosing" xml:space="preserve">
+    <value>Excelを閉じています...</value>
+  </data>
+  <data name="ExcelOpen" xml:space="preserve">
+    <value>Excelが開かれました。</value>
+  </data>
+  <data name="ExcelOpening" xml:space="preserve">
+    <value>Excelを開いています...</value>
+  </data>
+  <data name="Extracing" xml:space="preserve">
+    <value>{0} を '{1}' に抽出中...</value>
+  </data>
+  <data name="ExtractArgumentDescription" xml:space="preserve">
+    <value>Excelファイルへのパス。</value>
+  </data>
+  <data name="ExtractDescription" xml:space="preserve">
+    <value>Excelファイルからファイルを抽出します。</value>
+  </data>
+  <data name="ExtractOutDescription" xml:space="preserve">
+    <value>Excelファイルを抽出するフォルダー。</value>
+  </data>
+  <data name="FileNotFoundMessage" xml:space="preserve">
+    <value>Excelファイル '{0}' が見つかりません。</value>
+  </data>
+  <data name="FolderNotFoundMessage" xml:space="preserve">
+    <value>フォルダー '{0}' が見つかりません。</value>
+  </data>
+  <data name="GrantAccess" xml:space="preserve">
+    <value>Visual Basicプロジェクトへのアクセスを許可してください。</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>  ___            _ ___        _           
+ | __|_ ____ ___| | __|  _ __(_)___ _ _   
+ | _|\ \ / _/ -_) | _| || (_-&lt; / _ \ ' \  
+ |___/_\_\__\___|_|_| \_,_/__/_\___/_||_| 
+==========================================
+作者: ByteForge 
+MITライセンス - 2024   </value>
+  </data>
+  <data name="ItsA" xml:space="preserve">
+    <value>これは {0} です。エクスポートしています。</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>'{0}' が開かれました。</value>
+  </data>
+  <data name="Opening" xml:space="preserve">
+    <value>'{0}' を開いています...</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>{0} を処理中...</value>
+  </data>
+  <data name="ReferenceAdded" xml:space="preserve">
+    <value>{0} への参照がプロジェクトに追加されました。GUID = '{1}'</value>
+  </data>
+  <data name="ReferenceFailed" xml:space="preserve">
+    <value>{0} への参照の追加に失敗しました。</value>
+  </data>
+  <data name="ReferenceGuidError" xml:space="preserve">
+    <value>プロジェクトファイル内の '{0}' への参照のGUIDがVBプロジェクトのGUIDと異なります。</value>
+  </data>
+  <data name="ReferenceGuidProject" xml:space="preserve">
+    <value>     プロジェクトファイル内 : {0}</value>
+  </data>
+  <data name="ReferenceGuiVbProject" xml:space="preserve">
+    <value>     VBプロジェクト内   : {0}</value>
+  </data>
+  <data name="ReferenceRemoved" xml:space="preserve">
+    <value>VBプロジェクトから参照が削除されました。</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>もう一度試しますか？ Y/N</value>
+  </data>
+  <data name="CouldNotDeserialize" xml:space="preserve">
+    <value>ファイル '{0}' をデシリアライズできませんでした</value>
+  </data>
+  <data name="OutputFolderNotSpecified" xml:space="preserve">
+    <value>出力フォルダーが指定されていません。</value>
+  </data>
+  <data name="RootCommandDescription" xml:space="preserve">
+    <value>Excelファイルを操作します。</value>
+  </data>
+  <data name="VbaCompileError" xml:space="preserve">
+    <value>VBAプロジェクトのコンパイル中にエラーが発生しました。</value>
+  </data>
+  <data name="MitLicense" xml:space="preserve">
+    <value>Copyright © 2024 ByteForge 
+
+本ソフトウェアおよび関連文書ファイル（以下「ソフトウェア」）のコピーを取得する
+すべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。これには、
+ソフトウェアのコピーを使用、複製、変更、結合、公表、頒布、サブライセンス、
+および/または販売する権利、およびソフトウェアを提供する相手に同じことを許可する
+権利も無制限に含まれます。
+
+上記の著作権表示および本許諾表示を、ソフトウェアのすべてのコピーまたは重要な部分に
+記載するものとします。
+
+ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく
+提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害に
+ついての保証も含みますが、それに限定されるものではありません。 作者または著作権者は、
+契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、
+またはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の
+責任について何らの責任も負わないものとします。 </value>
+  </data>
+  <data name="LicenseDescription" xml:space="preserve">
+    <value>MITライセンスを表示します</value>
+  </data>
+  <data name="MacroError" xml:space="preserve">
+    <value>ExcelがAutoLoadマクロを実行できませんでした。</value>
+  </data>
+</root>
