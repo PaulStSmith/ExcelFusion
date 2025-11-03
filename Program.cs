@@ -1,9 +1,7 @@
-﻿using System;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
-using System.IO;
 
 namespace ExcelFusion
 {
@@ -13,7 +11,7 @@ namespace ExcelFusion
         /// Entrypoint for the program.
         /// </summary>
         /// <param name="args">Command line arguments passed to the program.</param>
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             /*
              * Prepare the extract command.
@@ -76,7 +74,7 @@ namespace ExcelFusion
              * Display the header and invoke the parser.
              */
             Console.WriteLine(ResourceStrings.Header);
-            parser.Invoke(args);
+            return parser.Invoke(args);
         }
 
         /// <summary>
@@ -115,8 +113,16 @@ namespace ExcelFusion
                     return 99;
                 }
 
-                ExcelFileCreator.CreateExcelFile(options);
-                ExcelFileCreator.IncludeVbaComponents(options);
+                try
+                {
+                    ExcelFileCreator.CreateExcelFile(options);
+                    ExcelFileCreator.IncludeVbaComponents(options);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return 98;
+                }
 
                 return 0;
             });

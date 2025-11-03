@@ -82,8 +82,10 @@ namespace ExcelFusion
                 Console.WriteLine(ResourceStrings.ExcelOpen);
                 var start = DateTime.Now;
                 Console.WriteLine(ResourceStrings.Opening, options.Out);
+#pragma warning disable CS8604 // options.Out is not null
                 var xlFilePath = new FileInfo(options.Out).FullName;
-                var wb = xl.Workbooks.Open(xlFilePath);
+#pragma warning restore CS8604 // 
+                var wb = xl.Workbooks.Open(xlFilePath, AddToMru: false);
                 wb.Activate();
                 Console.WriteLine(ResourceStrings.Open, options.Out);
 
@@ -104,7 +106,7 @@ namespace ExcelFusion
                 var btnCompile = proj.VBE.CommandBars.FindControl(Type: 1, Id: 578);
                 try
                 {
-                    if (btnCompile!= null && btnCompile.Enabled)
+                    if (btnCompile != null && btnCompile.Enabled)
                         btnCompile?.Execute();
                 }
                 catch (Exception ex)
@@ -166,7 +168,7 @@ namespace ExcelFusion
                 {
                     try
                     {
-                        var rf = proj.References.AddFromFile(item.FullPath);
+                        var rf = proj.References.AddFromFile(Path.GetFullPath(item.FullPath));
                         Console.WriteLine(ResourceStrings.ReferenceAdded, Path.GetFileName(item.FullPath), item.Guid);
                         continue;
                     }

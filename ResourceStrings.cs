@@ -31,7 +31,7 @@ namespace ExcelFusion
                                    + @" | _|\ \ / _/ -_) | _| || (_-< / _ \ ' \  " + "\r\n"
                                    + @" |___/_\_\__\___|_|_| \_,_/__/_\___/_||_| " + "\r\n"
                                    + @"==========================================" + "\r\n"
-                                   + @"Author: Paulo Santos " + "\r\n"
+                                   + @"Author: ByteForge " + "\r\n"
                                    + @"MIT License - 2024   " + "\r\n";
         public const String ItsA = "it's a {0}. Exporting.";
         public const String Open = "‘{0}’ Open.";
@@ -48,7 +48,7 @@ namespace ExcelFusion
         public const String OutputFolderNotSpecified = "Output folder not specified.";
         public const String RootCommandDescription = "Manipulates Excel files.";
         public const String VbaCompileError = "An error occurred while compiling the VBA project.";
-        public const String MitLicense = "Copyright © 2024 Paulo Santos \r\n" +
+        public const String MitLicense = "Copyright © 2024 ByteForge \r\n" +
                                          "\r\n" +
                                          "Permission is hereby granted, free of charge, to any person obtaining a copy \r\n" +
                                          "of this software and associated documentation files (the “Software”), to deal \r\n" +

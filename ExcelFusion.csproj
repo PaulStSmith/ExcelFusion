@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Excel Fusion</Title>
+    <Description>Extracts files from an Excel file and/or integrates such files back into and Excel file.</Description>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Title>Excel Fusion</Title>
-    <Description>Extracts files from an Excel file and/or integrates such files back into and Excel file.</Description>
     <Authors />
-    <Company>Paulo Santos</Company>
+    <Company>ByteForge</Company>
     <Product>Excel Fusion</Product>
-    <Copyright>Copyright © 2024 - Paulo Santos (MIT License)</Copyright>
+    <Copyright>Copyright © 2024 - ByteForge (MIT License)</Copyright>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
