@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExcelFusion
+﻿namespace ExcelFusion
 {
     /// <summary>
     /// Represents the options for the extract command.

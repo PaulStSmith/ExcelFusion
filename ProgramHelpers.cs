@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using ExcelFusion.Properties;
+using System.Runtime.InteropServices;
 
 namespace ExcelFusion
 {
@@ -37,8 +38,8 @@ namespace ExcelFusion
             if (ex.Message.StartsWith("Programmatic access to Visual Basic Project is not trusted"))
             {
                 Console.ForegroundColor = clr;
-                Console.WriteLine(ResourceStrings.GrantAccess);
-                Console.WriteLine(ResourceStrings.TryAgain);
+                Console.WriteLine(Resources.GrantAccess);
+                Console.WriteLine(Resources.TryAgain);
                 var c = Console.ReadKey();
                 if (c.Key == ConsoleKey.Y)
                     return false;

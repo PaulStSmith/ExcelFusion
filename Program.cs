@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using ExcelFusion.Properties;
+using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
@@ -16,26 +17,26 @@ namespace ExcelFusion
             /*
              * Prepare the extract command.
              */
-            var cmdExtract = new Command("extract", ResourceStrings.ExtractDescription) {
-                new Argument<string>(name:"ExcelFile", description:ResourceStrings.ExtractArgumentDescription),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("output"), description:ResourceStrings.ExtractOutDescription)
+            var cmdExtract = new Command("extract", Resources.ExtractDescription) {
+                new Argument<string>(name:"ExcelFile", description:Resources.ExtractArgumentDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("output"), description:Resources.ExtractOutDescription)
             };
             cmdExtract.AddAlias("e");
 
             /*
              * Prepare the build command.
              */
-            var cmdBuild = new Command("build", ResourceStrings.CreateDescription) {
-                new Argument<string>(name:"Folder", description:ResourceStrings.CreateArgumentDescription),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("output"), description:ResourceStrings.CreateOutDescription),
-                new Option<string>(aliases: ProgramHelpers.GenerateAliases("extension"), description:ResourceStrings.CreateExtDescription, getDefaultValue:()=>"xlsx")
+            var cmdBuild = new Command("build", Resources.CreateDescription) {
+                new Argument<string>(name:"Folder", description:Resources.CreateArgumentDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("output"), description:Resources.CreateOutDescription),
+                new Option<string>(aliases: ProgramHelpers.GenerateAliases("extension"), description:Resources.CreateExtDescription, getDefaultValue:()=>"xlsx")
             };
             cmdBuild.AddAlias("b");
 
             /*
              * Prepare the license command.
              */
-            var cmdLicense = new Command("license", ResourceStrings.LicenseDescription);
+            var cmdLicense = new Command("license", Resources.LicenseDescription);
             cmdLicense.AddAlias("l");
 
             /*
@@ -48,7 +49,7 @@ namespace ExcelFusion
             /*
              * Create the root command and add the subcommands.
              */
-            var root = new RootCommand(ResourceStrings.RootCommandDescription)
+            var root = new RootCommand(Resources.RootCommandDescription)
             {
                 cmdExtract,
                 cmdBuild,
@@ -73,7 +74,7 @@ namespace ExcelFusion
             /*
              * Display the header and invoke the parser.
              */
-            Console.WriteLine(ResourceStrings.Header);
+            Console.WriteLine(Resources.Header);
             return parser.Invoke(args);
         }
 
@@ -88,7 +89,7 @@ namespace ExcelFusion
              */
             cmdLicense.Handler = CommandHandler.Create(() =>
             {
-                Console.WriteLine(ResourceStrings.MitLicense);
+                Console.WriteLine(Resources.MitLicense);
                 return 0;
             });
         }
@@ -109,7 +110,7 @@ namespace ExcelFusion
                  */
                 if (!Directory.Exists(options.Folder))
                 {
-                    Console.WriteLine(ResourceStrings.FolderNotFoundMessage);
+                    Console.WriteLine(Resources.FolderNotFoundMessage);
                     return 99;
                 }
 
@@ -144,7 +145,7 @@ namespace ExcelFusion
                  */
                 if (!File.Exists(options.ExcelFile))
                 {
-                    Console.WriteLine(ResourceStrings.FileNotFoundMessage, options.ExcelFile);
+                    Console.WriteLine(Resources.FileNotFoundMessage, options.ExcelFile);
                     return 99;
                 }
 
@@ -158,7 +159,7 @@ namespace ExcelFusion
                 /*
                  * Extracts the Excel file to the Output folder, creating the directory if needed.
                  */
-                Console.WriteLine(ResourceStrings.Extracing, Path.GetFileName(options.ExcelFile), options.Out);
+                Console.WriteLine(Resources.Extracing, Path.GetFileName(options.ExcelFile), options.Out);
                 if (!Directory.Exists(options.Out))
                     Directory.CreateDirectory(options.Out);
                 ZipHelpers.ExtractFiles(options);

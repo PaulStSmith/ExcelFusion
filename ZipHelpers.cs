@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExcelFusion.Properties;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -23,7 +24,7 @@ namespace ExcelFusion
             {
                 var dest = Path.Combine(options.Out, entry.FullName.Replace('/', '\\'));
                 var dir = Path.GetDirectoryName(dest) ?? "";
-                Console.WriteLine(ResourceStrings.Extracing, entry.FullName, dir);
+                Console.WriteLine(Resources.Extracing, entry.FullName, dir);
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
@@ -74,7 +75,7 @@ namespace ExcelFusion
                 var buffer = new byte[4096];
                 var entryName = ProgramHelpers.GetRelativePath(basePath, f.FullName);
                 var entry = zip.CreateEntry(entryName.Replace('\\', '/'));
-                Console.WriteLine(ResourceStrings.Compressing , entryName);
+                Console.WriteLine(Resources.Compressing , entryName);
                 using var strm = entry.Open();
                 using var fs = f.OpenRead();
                 while (true)

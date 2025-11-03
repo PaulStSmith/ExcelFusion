@@ -1,14 +1,8 @@
-﻿using Microsoft.Vbe.Interop;
-using System.Text.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using ExcelFusion.Exceptions;
+using ExcelFusion.Properties;
+using Microsoft.Vbe.Interop;
 using System.IO.Compression;
-using System.Linq;
-using ExcelFusion.Exceptions;
-using System.Runtime.InteropServices;
-using System.Text;
-using Microsoft.Office.Interop.Excel;
+using System.Text.Json;
 
 namespace ExcelFusion
 {
@@ -31,7 +25,7 @@ namespace ExcelFusion
              */
             if (!Directory.Exists(options.Folder))
             {
-                Console.WriteLine(ResourceStrings.FolderNotFoundMessage, options.Folder);
+                Console.WriteLine(Resources.FolderNotFoundMessage, options.Folder);
                 return;
             }
 
@@ -61,7 +55,7 @@ namespace ExcelFusion
             ArgumentNullException.ThrowIfNull(options);
             if (!Directory.Exists(options.Folder))
             {
-                Console.WriteLine(ResourceStrings.FolderNotFoundMessage, options.Folder);
+                Console.WriteLine(Resources.FolderNotFoundMessage, options.Folder);
                 return;
             }
 
@@ -71,7 +65,7 @@ namespace ExcelFusion
                 /*
                  * Open Excel and the Excel file
                  */
-                Console.WriteLine(ResourceStrings.ExcelOpening);
+                Console.WriteLine(Resources.ExcelOpening);
                 var xl = new Microsoft.Office.Interop.Excel.Application
                 {
                     Visible = true,
@@ -79,15 +73,15 @@ namespace ExcelFusion
                     DisplayAlerts = false,
                     ScreenUpdating = false,
                 };
-                Console.WriteLine(ResourceStrings.ExcelOpen);
+                Console.WriteLine(Resources.ExcelOpen);
                 var start = DateTime.Now;
-                Console.WriteLine(ResourceStrings.Opening, options.Out);
+                Console.WriteLine(Resources.Opening, options.Out);
 #pragma warning disable CS8604 // options.Out is not null
                 var xlFilePath = new FileInfo(options.Out).FullName;
 #pragma warning restore CS8604 // 
                 var wb = xl.Workbooks.Open(xlFilePath, AddToMru: false);
                 wb.Activate();
-                Console.WriteLine(ResourceStrings.Open, options.Out);
+                Console.WriteLine(Resources.Open, options.Out);
 
                 /*
                  * Get the list of files of the VBA project.
@@ -111,7 +105,7 @@ namespace ExcelFusion
                 }
                 catch (Exception ex)
                 {
-                    throw new VbaCompilationException(ResourceStrings.VbaCompileError, ex);
+                    throw new VbaCompilationException(Resources.VbaCompileError, ex);
                 }
 
                 wb.Close(SaveChanges: true);
@@ -140,7 +134,7 @@ namespace ExcelFusion
             }
             catch (Exception)
             {
-                Console.WriteLine(ResourceStrings.CouldNotDeserialize, file);
+                Console.WriteLine(Resources.CouldNotDeserialize, file);
                 return;
             }
 
@@ -153,10 +147,10 @@ namespace ExcelFusion
                     if (vbGuid == item.Guid)
                         continue;
 
-                    Console.WriteLine(ResourceStrings.ReferenceGuidError, item.Name);
-                    Console.WriteLine(ResourceStrings.ReferenceGuidProject, item.Guid);
-                    Console.WriteLine(ResourceStrings.ReferenceGuiVbProject, vbGuid);
-                    Console.WriteLine(ResourceStrings.ReferenceRemoved);
+                    Console.WriteLine(Resources.ReferenceGuidError, item.Name);
+                    Console.WriteLine(Resources.ReferenceGuidProject, item.Guid);
+                    Console.WriteLine(Resources.ReferenceGuiVbProject, vbGuid);
+                    Console.WriteLine(Resources.ReferenceRemoved);
                     proj.References.Remove(rf);
                 }
                 catch (Exception) { }
@@ -169,12 +163,12 @@ namespace ExcelFusion
                     try
                     {
                         var rf = proj.References.AddFromFile(Path.GetFullPath(item.FullPath));
-                        Console.WriteLine(ResourceStrings.ReferenceAdded, Path.GetFileName(item.FullPath), item.Guid);
+                        Console.WriteLine(Resources.ReferenceAdded, Path.GetFileName(item.FullPath), item.Guid);
                         continue;
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine(ResourceStrings.ReferenceFailed, Path.GetFileName(item.FullPath));
+                        Console.WriteLine(Resources.ReferenceFailed, Path.GetFileName(item.FullPath));
                     }
                 }
             }
@@ -193,7 +187,7 @@ namespace ExcelFusion
              */
             foreach (var file in files)
             {
-                Console.WriteLine(ResourceStrings.Processing, file);
+                Console.WriteLine(Resources.Processing, file);
                 VBComponent comp;
                 try
                 {
@@ -221,7 +215,7 @@ namespace ExcelFusion
                 var file = files.FirstOrDefault((x) => x.Name.StartsWith(doc.Name[(doc.Name.LastIndexOf('.') + 1)..]));
                 if (file != null)
                 {
-                    Console.WriteLine(ResourceStrings.Processing, file.Name);
+                    Console.WriteLine(Resources.Processing, file.Name);
 
                     using var reader = file.OpenText();
                     var lines = reader.ReadToEnd().Replace("\r", "").Split('\n');

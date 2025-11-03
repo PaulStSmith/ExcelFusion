@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using ExcelFusion.Properties;
+using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -26,14 +27,14 @@ namespace ExcelFusion
              */
             if (!File.Exists(options.ExcelFile))
             {
-                Console.WriteLine(ResourceStrings.FileNotFoundMessage, options.ExcelFile);
+                Console.WriteLine(Resources.FileNotFoundMessage, options.ExcelFile);
                 return;
             }
 
             /*
              * Open Excel and the Excel file
              */
-            Console.WriteLine(ResourceStrings.ExcelOpening);
+            Console.WriteLine(Resources.ExcelOpening);
             var xl = new Microsoft.Office.Interop.Excel.Application
             {
                 Visible = true,
@@ -43,12 +44,12 @@ namespace ExcelFusion
             };
             try
             {
-                Console.WriteLine(ResourceStrings.ExcelOpen);
-                Console.WriteLine(ResourceStrings.Opening, options.ExcelFile);
+                Console.WriteLine(Resources.ExcelOpen);
+                Console.WriteLine(Resources.Opening, options.ExcelFile);
                 var xlFilePath = (new FileInfo(options.ExcelFile)).FullName;
                 var wb = xl.Workbooks.Open(xlFilePath);
                 wb.Activate();
-                Console.WriteLine(ResourceStrings.Open, options.ExcelFile);
+                Console.WriteLine(Resources.Open, options.ExcelFile);
 
                 /*
                  * Check if we have a VB project to export.
@@ -79,9 +80,9 @@ namespace ExcelFusion
             }
             finally
             {
-                Console.WriteLine(ResourceStrings.ExcelClosing);
+                Console.WriteLine(Resources.ExcelClosing);
                 xl.Quit();
-                Console.WriteLine(ResourceStrings.ExcelClosed);
+                Console.WriteLine(Resources.ExcelClosed);
             }
         }
 
@@ -132,7 +133,7 @@ namespace ExcelFusion
             ArgumentNullException.ThrowIfNull(wb);
             if (string.IsNullOrEmpty(options.Out))
             {
-                Console.WriteLine(ResourceStrings.OutputFolderNotSpecified);
+                Console.WriteLine(Resources.OutputFolderNotSpecified);
                 return false;
             }
             return true;
@@ -154,7 +155,7 @@ namespace ExcelFusion
                 /*
                  * Check if we need to ignore a component.
                  */
-                Console.Write(ResourceStrings.Processing, $"{wb.Name}.{comp.Name}");
+                Console.Write(Resources.Processing, $"{wb.Name}.{comp.Name}");
                 /*
                  * Establish the file extension for the component to be exported.
                  */
@@ -173,7 +174,7 @@ namespace ExcelFusion
                  */
                 var dir = Path.Combine(options.Out, ".vba");
                 var filePath = Path.Combine(dir, comp.Name + ext);
-                Console.WriteLine(ResourceStrings.ItsA, comp.Type.ToString()[(comp.Type.ToString().LastIndexOf('_') + 1)..]);
+                Console.WriteLine(Resources.ItsA, comp.Type.ToString()[(comp.Type.ToString().LastIndexOf('_') + 1)..]);
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
