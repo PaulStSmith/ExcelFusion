@@ -162,13 +162,11 @@ namespace ExcelFusion
                 Console.WriteLine(Resources.Extracing, Path.GetFileName(options.ExcelFile), options.Out);
                 if (!Directory.Exists(options.Out))
                     Directory.CreateDirectory(options.Out);
-                ZipHelpers.ExtractFiles(options);
-                VbaExtractor.
-
                 /*
                  * Extracts the VBA source code.
                  */
-                ExtractVbaSourceCode(options);
+                ZipHelpers.ExtractFiles(options);
+                VbaExtractor.ExtractVbaSourceCode(options);
 
                 return 0;
             });

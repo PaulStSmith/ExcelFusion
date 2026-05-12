@@ -35,19 +35,26 @@ namespace ExcelFusion
              * Open Excel and the Excel file
              */
             Console.WriteLine(Resources.ExcelOpening);
-            var xl = new Microsoft.Office.Interop.Excel.Application
-            {
-                Visible = true,
-                EnableEvents = false,
-                DisplayAlerts = false,
-                ScreenUpdating = false,
-            };
+            Microsoft.Office.Interop.Excel.Application? xl = null;
+            Workbooks? workbooks = null;
+            Workbook? wb = null;
+            var workbookClosed = false;
+            int? excelProcessId = null;
             try
             {
+                xl = new Microsoft.Office.Interop.Excel.Application
+                {
+                    Visible = true,
+                    EnableEvents = false,
+                    DisplayAlerts = false,
+                    ScreenUpdating = false,
+                };
+                excelProcessId = GetExcelProcessId(xl);
                 Console.WriteLine(Resources.ExcelOpen);
                 Console.WriteLine(Resources.Opening, options.ExcelFile);
                 var xlFilePath = (new FileInfo(options.ExcelFile)).FullName;
-                var wb = xl.Workbooks.Open(xlFilePath);
+                workbooks = xl.Workbooks;
+                wb = workbooks.Open(xlFilePath);
                 wb.Activate();
                 Console.WriteLine(Resources.Open, options.ExcelFile);
 
@@ -77,13 +84,121 @@ namespace ExcelFusion
                 }
 
                 wb.Close(SaveChanges: false);
+                workbookClosed = true;
             }
             finally
             {
                 Console.WriteLine(Resources.ExcelClosing);
-                xl.Quit();
+                if (wb != null && !workbookClosed)
+                    CloseWorkbook(wb);
+
+                if (xl != null)
+                    xl.Quit();
+
+                ReleaseComObject(wb);
+                ReleaseComObject(workbooks);
+                ReleaseComObject(xl);
+                CleanupComReferences();
+                TerminateExcelProcess(excelProcessId);
                 Console.WriteLine(Resources.ExcelClosed);
             }
+        }
+
+        /// <summary>
+        /// Gets the process identifier for the specified Excel application.
+        /// </summary>
+        /// <param name="application">The Excel application to inspect.</param>
+        /// <returns>The Excel process identifier, or null when it cannot be determined.</returns>
+        private static int? GetExcelProcessId(Microsoft.Office.Interop.Excel.Application application)
+        {
+            if (!OperatingSystem.IsWindows())
+                return null;
+
+            try
+            {
+                _ = GetWindowThreadProcessId(new IntPtr(application.Hwnd), out var processId);
+                return processId == 0 ? null : processId;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Terminates the specific Excel process if graceful COM shutdown left it running.
+        /// </summary>
+        /// <param name="processId">The process identifier captured from the Excel application.</param>
+        private static void TerminateExcelProcess(int? processId)
+        {
+            if (!processId.HasValue)
+                return;
+
+            try
+            {
+                using var process = System.Diagnostics.Process.GetProcessById(processId.Value);
+                if (process.HasExited)
+                    return;
+
+                process.Kill();
+                process.WaitForExit(5000);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Gets the process identifier associated with a window handle.
+        /// </summary>
+        /// <param name="hWnd">The window handle to inspect.</param>
+        /// <param name="processId">The process identifier associated with the handle.</param>
+        /// <returns>The identifier of the thread that created the window.</returns>
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int processId);
+
+        /// <summary>
+        /// Closes an Excel workbook while suppressing cleanup-time exceptions.
+        /// </summary>
+        /// <param name="workbook">The workbook to close.</param>
+        private static void CloseWorkbook(Workbook workbook)
+        {
+            try
+            {
+                workbook.Close(SaveChanges: false);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Releases a COM object while suppressing cleanup-time exceptions.
+        /// </summary>
+        /// <param name="comObject">The COM object to release.</param>
+        private static void ReleaseComObject(object? comObject)
+        {
+            if (!OperatingSystem.IsWindows() || comObject == null || !Marshal.IsComObject(comObject))
+                return;
+
+            try
+            {
+                Marshal.FinalReleaseComObject(comObject);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Runs garbage collection to release remaining runtime-callable wrappers.
+        /// </summary>
+        private static void CleanupComReferences()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         /// <summary>
@@ -98,21 +213,38 @@ namespace ExcelFusion
 
             var dir = Path.Combine(options.Out, ".vba");
             var proj = wb.VBProject;
+            References? refs = null;
             var projFile = Path.Combine(dir, proj.Name + ".proj");
             var lst = new List<ReferenceInfo>();
 
-            foreach (Reference rf in proj.References)
+            try
             {
-                if (rf.IsBroken || rf.BuiltIn) continue;
-
-                lst.Add(new ReferenceInfo()
+                refs = proj.References;
+                foreach (Reference rf in refs)
                 {
-                    Guid = new System.Guid(rf.Guid),
-                    Name = rf.Name,
-                    FullPath = rf.FullPath,
-                    Version = float.Parse($"{rf.Major}.{rf.Minor}"),
-                    Type = rf.Type
-                });
+                    try
+                    {
+                        if (rf.IsBroken || rf.BuiltIn) continue;
+
+                        lst.Add(new ReferenceInfo()
+                        {
+                            Guid = new System.Guid(rf.Guid),
+                            Name = rf.Name,
+                            FullPath = rf.FullPath,
+                            Version = float.Parse($"{rf.Major}.{rf.Minor}"),
+                            Type = rf.Type
+                        });
+                    }
+                    finally
+                    {
+                        ReleaseComObject(rf);
+                    }
+                }
+            }
+            finally
+            {
+                ReleaseComObject(refs);
+                ReleaseComObject(proj);
             }
 
             using var writer = new StreamWriter(projFile);
@@ -150,38 +282,55 @@ namespace ExcelFusion
             if (!CheckArgs(options, wb) || !wb.HasVBProject) return;
 
             var proj = wb.VBProject;
-            foreach (VBComponent comp in proj.VBComponents)
+            VBComponents? components = null;
+            try
             {
-                /*
-                 * Check if we need to ignore a component.
-                 */
-                Console.Write(Resources.Processing, $"{wb.Name}.{comp.Name}");
-                /*
-                 * Establish the file extension for the component to be exported.
-                 */
-                var ext = comp.Type switch
+                components = proj.VBComponents;
+                foreach (VBComponent comp in components)
                 {
-                    vbext_ComponentType.vbext_ct_MSForm => ".frm",
-                    vbext_ComponentType.vbext_ct_Document => ".cls",
-                    vbext_ComponentType.vbext_ct_StdModule => ".bas",
-                    vbext_ComponentType.vbext_ct_ClassModule => ".cls",
-                    _ => ".bin",
-                };
+                    try
+                    {
+                        /*
+                         * Check if we need to ignore a component.
+                         */
+                        Console.Write(Resources.Processing, $"{wb.Name}.{comp.Name}");
+                        /*
+                         * Establish the file extension for the component to be exported.
+                         */
+                        var ext = comp.Type switch
+                        {
+                            vbext_ComponentType.vbext_ct_MSForm => ".frm",
+                            vbext_ComponentType.vbext_ct_Document => ".cls",
+                            vbext_ComponentType.vbext_ct_StdModule => ".bas",
+                            vbext_ComponentType.vbext_ct_ClassModule => ".cls",
+                            _ => ".bin",
+                        };
 
-                /*
-                 * Defines the name of the exported file.
-                 * The VB components are exported to the “.vba” folder.
-                 */
-                var dir = Path.Combine(options.Out, ".vba");
-                var filePath = Path.Combine(dir, comp.Name + ext);
-                Console.WriteLine(Resources.ItsA, comp.Type.ToString()[(comp.Type.ToString().LastIndexOf('_') + 1)..]);
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
+                        /*
+                         * Defines the name of the exported file.
+                         * The VB components are exported to the “.vba” folder.
+                         */
+                        var dir = Path.Combine(options.Out, ".vba");
+                        var filePath = Path.Combine(dir, comp.Name + ext);
+                        Console.WriteLine(Resources.ItsA, comp.Type.ToString()[(comp.Type.ToString().LastIndexOf('_') + 1)..]);
+                        if (!Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
 
-                /*
-                 * Extracts the component to the file.
-                 */
-                comp.Export(filePath);
+                        /*
+                         * Extracts the component to the file.
+                         */
+                        comp.Export(filePath);
+                    }
+                    finally
+                    {
+                        ReleaseComObject(comp);
+                    }
+                }
+            }
+            finally
+            {
+                ReleaseComObject(components);
+                ReleaseComObject(proj);
             }
 #pragma warning restore CS8604
         }

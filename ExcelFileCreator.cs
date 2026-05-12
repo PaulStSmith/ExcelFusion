@@ -2,6 +2,7 @@
 using ExcelFusion.Properties;
 using Microsoft.Vbe.Interop;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace ExcelFusion
@@ -62,55 +63,182 @@ namespace ExcelFusion
             var vbaFolder = Path.Combine(options.Folder, ".vba");
             if (Directory.Exists(vbaFolder))
             {
+                Microsoft.Office.Interop.Excel.Application? xl = null;
+                Microsoft.Office.Interop.Excel.Workbook? wb = null;
+                VBProject? proj = null;
+                object? btnCompile = null;
+                var saveChanges = false;
+                int? excelProcessId = null;
+
                 /*
                  * Open Excel and the Excel file
                  */
-                Console.WriteLine(Resources.ExcelOpening);
-                var xl = new Microsoft.Office.Interop.Excel.Application
-                {
-                    Visible = true,
-                    EnableEvents = false,
-                    DisplayAlerts = false,
-                    ScreenUpdating = false,
-                };
-                Console.WriteLine(Resources.ExcelOpen);
-                var start = DateTime.Now;
-                Console.WriteLine(Resources.Opening, options.Out);
-#pragma warning disable CS8604 // options.Out is not null
-                var xlFilePath = new FileInfo(options.Out).FullName;
-#pragma warning restore CS8604 // 
-                var wb = xl.Workbooks.Open(xlFilePath, AddToMru: false);
-                wb.Activate();
-                Console.WriteLine(Resources.Open, options.Out);
-
-                /*
-                 * Get the list of files of the VBA project.
-                 */
-                var proj = wb.VBProject;
-                var vbDi = new DirectoryInfo(vbaFolder);
-                var files = vbDi.GetFiles().Where((x) => (".bas;.cls;.frm").Contains(x.Extension, StringComparison.InvariantCultureIgnoreCase)).ToList<FileInfo>();
-
-                InjectCodeInDocComponents(proj, files);
-                InjectCodeInComponents(proj, files);
-                InjectReferences(proj, vbDi);
-
-                /*
-                 * Try to compile the VBA project
-                 */
-                var btnCompile = proj.VBE.CommandBars.FindControl(Type: 1, Id: 578);
                 try
                 {
-                    if (btnCompile != null && btnCompile.Enabled)
-                        btnCompile?.Execute();
-                }
-                catch (Exception ex)
-                {
-                    throw new VbaCompilationException(Resources.VbaCompileError, ex);
-                }
+                    Console.WriteLine(Resources.ExcelOpening);
+                    xl = new Microsoft.Office.Interop.Excel.Application
+                    {
+                        Visible = true,
+                        EnableEvents = false,
+                        DisplayAlerts = false,
+                        ScreenUpdating = false,
+                    };
+                    excelProcessId = GetExcelProcessId(xl);
+                    Console.WriteLine(Resources.ExcelOpen);
+                    var start = DateTime.Now;
+                    Console.WriteLine(Resources.Opening, options.Out);
+#pragma warning disable CS8604 // options.Out is not null
+                    var xlFilePath = new FileInfo(options.Out).FullName;
+#pragma warning restore CS8604 // 
+                    wb = xl.Workbooks.Open(xlFilePath, AddToMru: false);
+                    wb.Activate();
+                    Console.WriteLine(Resources.Open, options.Out);
 
-                wb.Close(SaveChanges: true);
-                xl.Quit();
+                    /*
+                     * Get the list of files of the VBA project.
+                     */
+                    proj = wb.VBProject;
+                    var vbDi = new DirectoryInfo(vbaFolder);
+                    var files = vbDi.GetFiles().Where((x) => (".bas;.cls;.frm").Contains(x.Extension, StringComparison.InvariantCultureIgnoreCase)).ToList<FileInfo>();
+
+                    InjectCodeInDocComponents(proj, files);
+                    InjectCodeInComponents(proj, files);
+                    InjectReferences(proj, vbDi);
+
+                    /*
+                     * Try to compile the VBA project
+                     */
+                    btnCompile = proj.VBE.CommandBars.FindControl(Type: 1, Id: 578);
+                    try
+                    {
+                        if (btnCompile != null)
+                        {
+                            dynamic compileButton = btnCompile;
+                            if (compileButton.Enabled)
+                                compileButton.Execute();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new VbaCompilationException(Resources.VbaCompileError, ex);
+                    }
+
+                    saveChanges = true;
+                }
+                finally
+                {
+                    if (wb != null)
+                        CloseWorkbook(wb, saveChanges);
+
+                    if (xl != null)
+                        xl.Quit();
+
+                    ReleaseComObject(btnCompile);
+                    ReleaseComObject(proj);
+                    ReleaseComObject(wb);
+                    ReleaseComObject(xl);
+                    CleanupComReferences();
+                    TerminateExcelProcess(excelProcessId);
+                }
             }
+        }
+
+        /// <summary>
+        /// Gets the process identifier for the specified Excel application.
+        /// </summary>
+        /// <param name="application">The Excel application to inspect.</param>
+        /// <returns>The Excel process identifier, or null when it cannot be determined.</returns>
+        private static int? GetExcelProcessId(Microsoft.Office.Interop.Excel.Application application)
+        {
+            if (!OperatingSystem.IsWindows())
+                return null;
+
+            try
+            {
+                _ = GetWindowThreadProcessId(new IntPtr(application.Hwnd), out var processId);
+                return processId == 0 ? null : processId;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Terminates the specific Excel process if graceful COM shutdown left it running.
+        /// </summary>
+        /// <param name="processId">The process identifier captured from the Excel application.</param>
+        private static void TerminateExcelProcess(int? processId)
+        {
+            if (!processId.HasValue)
+                return;
+
+            try
+            {
+                using var process = System.Diagnostics.Process.GetProcessById(processId.Value);
+                if (process.HasExited)
+                    return;
+
+                process.Kill();
+                process.WaitForExit(5000);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Gets the process identifier associated with a window handle.
+        /// </summary>
+        /// <param name="hWnd">The window handle to inspect.</param>
+        /// <param name="processId">The process identifier associated with the handle.</param>
+        /// <returns>The identifier of the thread that created the window.</returns>
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int processId);
+
+        /// <summary>
+        /// Closes an Excel workbook while suppressing cleanup-time exceptions.
+        /// </summary>
+        /// <param name="workbook">The workbook to close.</param>
+        /// <param name="saveChanges">A value indicating whether workbook changes should be saved.</param>
+        private static void CloseWorkbook(Microsoft.Office.Interop.Excel.Workbook workbook, bool saveChanges)
+        {
+            try
+            {
+                workbook.Close(SaveChanges: saveChanges);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Releases a COM object while suppressing cleanup-time exceptions.
+        /// </summary>
+        /// <param name="comObject">The COM object to release.</param>
+        private static void ReleaseComObject(object? comObject)
+        {
+            if (!OperatingSystem.IsWindows() || comObject == null || !Marshal.IsComObject(comObject))
+                return;
+
+            try
+            {
+                Marshal.FinalReleaseComObject(comObject);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Runs garbage collection to release remaining runtime-callable wrappers.
+        /// </summary>
+        private static void CleanupComReferences()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         /// <summary>
