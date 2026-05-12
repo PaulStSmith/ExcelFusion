@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Ignore folders starting with ‘.’
 .*/
+# Local workbook macro inspection output
+macro-inspections/

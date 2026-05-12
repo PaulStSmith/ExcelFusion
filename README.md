@@ -1,6 +1,6 @@
 # Excel Fusion
 
-A command-line tool for extracting, manipulating, and rebuilding Microsoft Excel files with full VBA (Visual Basic for Applications) support. Excel Fusion treats Excel files as ZIP archives and provides comprehensive two-way functionality for file decomposition and reconstruction.
+A Windows command-line tool for extracting, modifying, and rebuilding Microsoft Excel files with VBA (Visual Basic for Applications) support. Excel Fusion treats Excel files as ZIP archives for workbook content and uses Excel COM automation for VBA source extraction and injection.
 
 ## Features
 
@@ -10,22 +10,26 @@ A command-line tool for extracting, manipulating, and rebuilding Microsoft Excel
 - **Full Reconstruction**: Rebuilds functional Excel files from extracted components
 - **VBA Compilation**: Automatically compiles VBA projects during reconstruction
 - **Flexible Output**: Supports various Excel formats (.xlsx, .xlsm, .xltx, etc.)
-- **Cross-platform**: Built on .NET 8 for modern cross-platform compatibility
+- **Excel Process Cleanup**: Tracks the Excel process created for COM automation and terminates only that captured process if graceful shutdown leaves it running
 
 ## Requirements
 
+- **Windows**
 - **.NET 8 Runtime** or higher
 - **Microsoft Excel** installed (required for VBA operations)
 - **VBA Project Access** permissions (may require manual configuration)
+- **Visual Studio MSBuild** for source builds because COM references require the .NET Framework MSBuild toolchain
 
 ## Installation
 
 ### From Source
-```bash
+```shell
 git clone <repository-url>
 cd ExcelFusion
-dotnet build --configuration Release
+"C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" ExcelFusion.sln /restore /m /p:Configuration=Release
 ```
+
+`dotnet build` is not sufficient for this project because SDK MSBuild does not support `ResolveComReference`.
 
 ### Usage
 ```shell
@@ -116,6 +120,12 @@ Excel Fusion provides comprehensive VBA support through Microsoft Office Interop
 - Provides detailed error reporting for compilation failures
 - Handles VBA project access permission prompts
 
+### Excel Automation Cleanup
+- Captures the process ID for the Excel instance created by Excel Fusion
+- Attempts normal workbook close and `Application.Quit()` first
+- Releases COM wrappers and runs finalizer cleanup
+- Terminates only the captured Excel process if it remains alive after graceful cleanup
+
 ## Advanced Usage
 
 ### Batch Processing
@@ -168,7 +178,7 @@ Excel Fusion provides comprehensive error handling for common scenarios:
 - **COM Interop**: Integration with Excel Object Model for VBA operations
 - **JSON Serialization**: Modern reference metadata storage
 - **Stream Processing**: Efficient handling of large Excel files
-- **Memory Management**: Proper cleanup of COM objects and file handles
+- **Process Management**: Captured-PID cleanup for Excel COM automation
 
 ## Troubleshooting
 
@@ -179,6 +189,13 @@ If you encounter "Programmatic access to Visual Basic Project is not trusted" er
 2. Navigate to "Macro Settings"
 3. Check "Trust access to the VBA project object model"
 4. Restart Excel and try again
+
+### Build Issues
+If `dotnet build` fails with `MSB4803` or `ResolveComReference`, build with full Visual Studio MSBuild instead:
+
+```shell
+"C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" ExcelFusion.sln /restore /m /p:Configuration=Release
+```
 
 ### Performance Considerations
 - VBA operations require Excel automation and may be slower for large projects
